@@ -3,8 +3,8 @@ import com.neuronrobotics.bowlerstudio.vitamins.Vitamins;
 ArrayList<CSG> makeBallJoint(){
 	
 	double printerNozzelDiameter= 0.45;
-	int sphereNumSlices=40;//
-	int sphereNumStacks=20;//
+	int sphereNumSlices=20;//
+	int sphereNumStacks=10;//
 	double socketAllignemntPinRadius=2;
 	
 	LengthParameter ballJointBaseThickness 		= new LengthParameter("Material Thickness",3.5,[10,1])
@@ -28,8 +28,8 @@ ArrayList<CSG> makeBallJoint(){
 							.toCSG()	
 							.movex(-1)			
 	ballShaft=ballShaft.union(
-						new Cylinder(	ballJointPinSize.getMM()/2+2, // Radius at the top
-	                      				ballJointPinSize.getMM()/2+2, // Radius at the bottom
+						new Cylinder(	ballJointPin.getMM()/2+2, // Radius at the top
+	                      				ballJointPin.getMM()/2+2, // Radius at the bottom
 	                      				centerOfBall.getMM(), // Height
 	                      			         (int)30 //resolution
 	                      			         ).toCSG()
@@ -75,16 +75,12 @@ ArrayList<CSG> makeBallJoint(){
 	            			         .movez(-tabSize/2)
 	            			         .roty(90)
 	            			         
-	            			         .difference(new Cube(   socketAllignemntPinRadius*2,
-						            			        socketAllignemntPinRadius*2,
-						            			        socketAllignemntPinRadius*2
-						            			         ) .toCSG()
-						            			         .movez(-socketAllignemntPinRadius)
-	            			         )
+
 	            			         .movex(ballJointPinSize.getMM())	      			         
 	CSG ballSocket = new Sphere(ballJointPinSize.getMM()+printerNozzelDiameter, sphereNumSlices,sphereNumStacks).toCSG()
 	            			        .roty(90)
-	            			        .difference(hatTab,hatTab.rotz(180))		    	
+	            			        .difference(hatTab,hatTab.rotz(180))	
+	            			        .roty(90)	    	
 	ballShaft
 		.setParameter(ballJointPinSize)
 		.setParameter(centerOfBall)
