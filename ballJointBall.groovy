@@ -3,8 +3,8 @@ import com.neuronrobotics.bowlerstudio.vitamins.Vitamins;
 ArrayList<CSG> makeBallJoint(){
 	
 	double printerNozzelDiameter= 0.45;
-	int sphereNumSlices=20;//
-	int sphereNumStacks=10;//
+	int sphereNumSlices=40;//
+	int sphereNumStacks=20;//
 	double socketAllignemntPinRadius=2;
 	
 	LengthParameter ballJointBaseThickness 		= new LengthParameter("Material Thickness",3.5,[10,1])
