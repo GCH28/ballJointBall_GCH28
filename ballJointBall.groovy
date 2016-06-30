@@ -11,7 +11,8 @@ ArrayList<CSG> makeBallJoint(){
 	LengthParameter ballJointPinSize 		= new LengthParameter("Ball Joint Ball Radius",8,[50,4])
 	LengthParameter centerOfBall 		= new LengthParameter("Center Of Ball",18.5,[50,ballJointPinSize.getMM()])
 	LengthParameter ballJointPin		= new LengthParameter("Ball Joint Pin Size",8,[50,ballJointPinSize.getMM()])
-	
+	LengthParameter printerOffset		= new LengthParameter("printerOffset",0.5,[2,0.001])
+	printerNozzelDiameter=printerOffset.getMM()
 	CSG ballShaftHole= new Cube(	ballJointPinSize.getMM(),// X dimention
 							ballJointPinSize.getMM(),// Y dimention
 							ballJointBaseThickness.getMM()//  Z dimention
@@ -85,6 +86,7 @@ ArrayList<CSG> makeBallJoint(){
 		.setParameter(ballJointPinSize)
 		.setParameter(centerOfBall)
 		.setParameter(ballJointPinSize)
+		.setParameter(printerOffset)
 		.setRegenerate({ makeBallJoint().get(0)})
 	return [ballShaft,ballSocket]
 }
