@@ -40,9 +40,7 @@ ArrayList<CSG> makeBallJoint(){
 	                      			         .movex(-ballJointBaseThickness.getMM()/2)	        
 					)
 	
-	ballShaft=ballShaft.union(new Sphere(ballJointPinSize.getMM(), sphereNumSlices,sphereNumStacks).toCSG()
-		       			         .movex(-centerOfBall.getMM())	        
-					)	
+		
 	ballShaft= ballShaft.intersect(new Cube(	centerOfBall.getMM()*4,// X dimention
 							centerOfBall.getMM()*4,// Y dimention
 							centerOfBall.getMM()*2//  Z dimention
@@ -65,9 +63,14 @@ ArrayList<CSG> makeBallJoint(){
 	       			         .movex(-centerOfBall.getMM())
 	       			         .movez(-socketAllignemntPinRadius)
 	       			         .rotx(90)
-	                      			         
-	ballShaft=ballShaft.difference(ballPin)
-					.movex(centerOfBall.getMM())
+	ballShaft=ballShaft.union(new Sphere(ballJointPinSize.getMM(), sphereNumSlices,sphereNumStacks).toCSG()
+	 							.intersect(new Cube(ballJointPinSize.getMM()*2).toCSG().toZMin())
+		       			          .movex(-centerOfBall.getMM())	
+								
+								.difference(ballPin)        
+					)                     			         
+	ballShaft=ballShaft
+				.movex(centerOfBall.getMM())
 		
 	double tabSize =socketAllignemntPinRadius-printerNozzelDiameter			
 	CSG hatTab = new Cylinder(	tabSize, // Radius at the top
