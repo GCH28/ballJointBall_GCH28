@@ -9,17 +9,16 @@ ArrayList<CSG> makeBallJoint(){
 	double printerNozzelDiameter= 0.45;
 	int sphereNumSlices=40;//
 	int sphereNumStacks=20;//
-	double socketAllignemntPinRadius=2;
-	
+
 	LengthParameter ballJointBaseThickness 		= new LengthParameter("Material Thickness",3.5,[10,1])
 	LengthParameter ballJointPinSize 		= new LengthParameter("Ball Joint Ball Radius",8,[50,4])
 	LengthParameter centerOfBall 		= new LengthParameter("Center Of Ball",18.5,[50,ballJointPinSize.getMM()])
 	LengthParameter ballJointPin		= new LengthParameter("Ball Joint Pin Size",8,[50,ballJointPinSize.getMM()])
-	LengthParameter printerOffset		= new LengthParameter("printerOffset",0.5,[socketAllignemntPinRadius,0.001])
+	LengthParameter printerOffset		= new LengthParameter("printerOffset",0.5,[1,0.001])
+	
 	ballJointPin.setMM(ballJointPinSize.getMM())
 	centerOfBall.setMM(ballJointPinSize.getMM()*2.25)
-	if(socketAllignemntPinRadius<=printerOffset.getMM())
-		socketAllignemntPinRadius*=1.5
+	double socketAllignemntPinRadius=ballJointPinSize.getMM()/4;
 	printerNozzelDiameter=printerOffset.getMM()
 	CSG ballShaftHole= new Cube(	ballJointPinSize.getMM(),// X dimention
 							ballJointPinSize.getMM(),// Y dimention
