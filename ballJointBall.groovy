@@ -1,5 +1,9 @@
 import eu.mihosoft.vrl.v3d.parametrics.*;
 import com.neuronrobotics.bowlerstudio.vitamins.Vitamins;
+if (args==null){
+	
+	//CSGDatabase.clear()
+}
 ArrayList<CSG> makeBallJoint(){
 	
 	double printerNozzelDiameter= 0.45;
@@ -12,6 +16,7 @@ ArrayList<CSG> makeBallJoint(){
 	LengthParameter centerOfBall 		= new LengthParameter("Center Of Ball",18.5,[50,ballJointPinSize.getMM()])
 	LengthParameter ballJointPin		= new LengthParameter("Ball Joint Pin Size",8,[50,ballJointPinSize.getMM()])
 	LengthParameter printerOffset		= new LengthParameter("printerOffset",0.5,[socketAllignemntPinRadius,0.001])
+	ballJointPin.setMM(ballJointPinSize.getMM())
 	if(socketAllignemntPinRadius<=printerOffset.getMM())
 		socketAllignemntPinRadius*=1.5
 	printerNozzelDiameter=printerOffset.getMM()
@@ -29,7 +34,7 @@ ArrayList<CSG> makeBallJoint(){
 							)
 							.cornerRadius(1)
 							.toCSG()	
-							.movex(-1)			
+							//.movex(-1)			
 	ballShaft=ballShaft.union(
 						new Cylinder(	ballJointPin.getMM()/2+2, // Radius at the top
 	                      				ballJointPin.getMM()/2+2, // Radius at the bottom
@@ -37,7 +42,7 @@ ArrayList<CSG> makeBallJoint(){
 	                      			         (int)30 //resolution
 	                      			         ).toCSG()
 	                      			         .roty(90)
-	                      			         .movex(-ballJointBaseThickness.getMM()/2)	        
+	                      			         //.movex(-ballJointBaseThickness.getMM()/2)	        
 					)
 	
 		
