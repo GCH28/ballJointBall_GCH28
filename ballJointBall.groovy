@@ -17,6 +17,7 @@ ArrayList<CSG> makeBallJoint(){
 	LengthParameter ballJointPin		= new LengthParameter("Ball Joint Pin Size",8,[50,ballJointPinSize.getMM()])
 	LengthParameter printerOffset		= new LengthParameter("printerOffset",0.5,[socketAllignemntPinRadius,0.001])
 	ballJointPin.setMM(ballJointPinSize.getMM())
+	centerOfBall.setMM(ballJointPinSize.getMM()*2.25)
 	if(socketAllignemntPinRadius<=printerOffset.getMM())
 		socketAllignemntPinRadius*=1.5
 	printerNozzelDiameter=printerOffset.getMM()
