@@ -36,8 +36,8 @@ ArrayList<CSG> makeBallJoint(){
 							.toCSG()	
 							//.movex(-1)			
 	ballShaft=ballShaft.union(
-						new Cylinder(	ballJointPin.getMM()/2+2, // Radius at the top
-	                      				ballJointPin.getMM()/2+2, // Radius at the bottom
+						new Cylinder(	ballJointPin.getMM()/2*1.25, // Radius at the top
+	                      				ballJointPin.getMM()/2*1.25, // Radius at the bottom
 	                      				centerOfBall.getMM(), // Height
 	                      			         (int)30 //resolution
 	                      			         ).toCSG()
