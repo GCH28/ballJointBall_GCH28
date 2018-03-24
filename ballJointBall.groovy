@@ -80,25 +80,23 @@ ArrayList<CSG> makeBallJoint(){
 	double tabSize =socketAllignemntPinRadius-printerNozzelDiameter			
 	CSG hatTab = new Cylinder(	tabSize, // Radius at the top
 							tabSize, // Radius at the top
-							tabSize, // Radius at the top
+							tabSize*4, // Radius at the top
 							(int)20
 	            			         ).toCSG()
-	            			         .movez(-tabSize/2)
-	            			         .roty(90)
-	            			         
-
-	            			         .movex(ballJointPinSize.getMM())	      			         
+	            			         .movez(-tabSize*2+ballJointPinSize.getMM())
+	            			         //.roty(90)
+	            			         //.movex(ballJointPinSize.getMM())	      			         
 	CSG ballSocket = new Sphere(ballJointPinSize.getMM()+printerNozzelDiameter, sphereNumSlices,sphereNumStacks).toCSG()
-	            			        .roty(90)
+	            			        //.roty(90)
 	            			        .difference(hatTab)	
-	            			        .roty(90)	    	
+	            			        //.roty(90)	    	
 	ballShaft
 		.setParameter(ballJointPinSize)
 		.setParameter(centerOfBall)
 		.setParameter(ballJointPinSize)
 		.setParameter(printerOffset)
 		.setRegenerate({ makeBallJoint().get(0)})
-	return [ballShaft,ballSocket]
+	return [ballShaft,ballSocket,hatTab]
 }
 //CSGDatabase.clear()//set up the database to force only the default values in	
 return makeBallJoint()
