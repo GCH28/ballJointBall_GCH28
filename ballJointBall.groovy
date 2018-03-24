@@ -96,7 +96,7 @@ ArrayList<CSG> makeBallJoint(){
 		.setParameter(ballJointPinSize)
 		.setParameter(printerOffset)
 		.setRegenerate({ makeBallJoint().get(0)})
-	return [ballShaft,ballSocket,hatTab]
+	return [ballShaft,ballSocket]
 }
 //CSGDatabase.clear()//set up the database to force only the default values in	
 return makeBallJoint()
