@@ -90,7 +90,7 @@ ArrayList<CSG> makeBallJoint(){
 	            			         .movex(ballJointPinSize.getMM())	      			         
 	CSG ballSocket = new Sphere(ballJointPinSize.getMM()+printerNozzelDiameter, sphereNumSlices,sphereNumStacks).toCSG()
 	            			        .roty(90)
-	            			        .difference(hatTab,hatTab.rotz(180))	
+	            			        .difference(hatTab)	
 	            			        .roty(90)	    	
 	ballShaft
 		.setParameter(ballJointPinSize)
