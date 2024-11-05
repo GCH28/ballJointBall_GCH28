@@ -1,103 +1,89 @@
-import eu.mihosoft.vrl.v3d.parametrics.*;
-import com.neuronrobotics.bowlerstudio.vitamins.Vitamins;
-if (args==null){
-	
-	//CSGDatabase.clear()
-}
-ArrayList<CSG> makeBallJoint(){
-	
-	double printerNozzelDiameter= 0.45;
-	int sphereNumSlices=40;//
-	int sphereNumStacks=20;//
+import eu.mihosoft.vrl.v3d.CSG
+import eu.mihosoft.vrl.v3d.Sphere
+import eu.mihosoft.vrl.v3d.Cylinder
+import eu.mihosoft.vrl.v3d.Cube
 
-	LengthParameter ballJointBaseThickness 		= new LengthParameter("Material Thickness",3.5,[10,1])
-	LengthParameter ballJointPinSize 		= new LengthParameter("Ball Joint Ball Radius",8,[50,4])
-	LengthParameter centerOfBall 		= new LengthParameter("Center Of Ball",18.5,[50,ballJointPinSize.getMM()])
-	LengthParameter ballJointPin		= new LengthParameter("Ball Joint Pin Size",8,[50,ballJointPinSize.getMM()])
-	LengthParameter printerOffset		= new LengthParameter("printerOffset",0.5,[1,0.001])
-	
-	ballJointPin.setMM(ballJointPinSize.getMM())
-	centerOfBall.setMM(ballJointPinSize.getMM()*2.25)
-	double socketAllignemntPinRadius=ballJointPinSize.getMM()/2.25;
-	printerNozzelDiameter=printerOffset.getMM()
-	CSG ballShaftHole= new Cube(	ballJointPinSize.getMM(),// X dimention
-							ballJointPinSize.getMM(),// Y dimention
-							ballJointBaseThickness.getMM()//  Z dimention
-							).toCSG()
-							.movez(ballJointBaseThickness.getMM()/2)
-							.makeKeepaway(printerNozzelDiameter)
-	
-				
-	CSG ballShaft = new RoundedCube(	ballJointBaseThickness.getMM()+1,// X dimention
-							ballJointPin.getMM(),// Y dimention
-							ballJointPin.getMM()//  Z dimention
-							)
-							.cornerRadius(1)
-							.toCSG()	
-							//.movex(-1)			
-	ballShaft=ballShaft.union(
-						new Cylinder(	ballJointPin.getMM()/2*1.25, // Radius at the top
-	                      				ballJointPin.getMM()/2*1.25, // Radius at the bottom
-	                      				centerOfBall.getMM(), // Height
-	                      			         (int)30 //resolution
-	                      			         ).toCSG()
-	                      			         .roty(90)
-	                      			         //.movex(-ballJointBaseThickness.getMM()/2)	        
-					)
-	
-		
-	ballShaft= ballShaft.intersect(new Cube(	centerOfBall.getMM()*4,// X dimention
-							centerOfBall.getMM()*4,// Y dimention
-							centerOfBall.getMM()*2//  Z dimention
-							)
-							.toCSG()	
-							.movez(centerOfBall.getMM())
-							)
-	CSG ballPin= new Cylinder(	ballJointPinSize.getMM()+socketAllignemntPinRadius, // Radius at the top
-	                      		ballJointPinSize.getMM()+socketAllignemntPinRadius, // Radius at the bottom
-	                      		socketAllignemntPinRadius*2, // Height
-	       			         (int)30 //resolution
-	       			         ).toCSG()
-	       			         .difference(
-	       			         	new Cylinder(	ballJointPinSize.getMM()-socketAllignemntPinRadius, // Radius at the top
-				                      		ballJointPinSize.getMM()-socketAllignemntPinRadius, // Radius at the bottom
-				                      		socketAllignemntPinRadius*2, // Height
-				       			         (int)30 //resolution
-				       			         ).toCSG()
-	       			         	)		         		
-	       			         .movex(-centerOfBall.getMM())
-	       			         .movez(-socketAllignemntPinRadius)
-	       			         .rotx(90)
-	ballShaft=ballShaft.union(new Sphere(ballJointPinSize.getMM(), sphereNumSlices,sphereNumStacks).toCSG()
-	 							.intersect(new Cube(ballJointPinSize.getMM()*2).toCSG().toZMin())
-		       			          .movex(-centerOfBall.getMM())	
-								
-								.difference(ballPin)        
-					)                     			         
-	ballShaft=ballShaft
-				.movex(centerOfBall.getMM())
-		
-	double tabSize =socketAllignemntPinRadius-printerNozzelDiameter			
-	CSG hatTab = new Cylinder(	tabSize, // Radius at the top
-							tabSize, // Radius at the top
-							tabSize*4, // Radius at the top
-							(int)20
-	            			         ).toCSG()
-	            			         .movez(-tabSize+ballJointPinSize.getMM())
-	            			         //.roty(90)
-	            			         //.movex(ballJointPinSize.getMM())	      			         
-	CSG ballSocket = new Sphere(ballJointPinSize.getMM()+printerNozzelDiameter, sphereNumSlices,sphereNumStacks).toCSG()
-	            			        //.roty(90)
-	            			        .difference(hatTab)	
-	            			        //.roty(90)	    	
-	ballShaft
-		.setParameter(ballJointPinSize)
-		.setParameter(centerOfBall)
-		.setParameter(ballJointPinSize)
-		.setParameter(printerOffset)
-		.setRegenerate({ makeBallJoint().get(0)})
-	return [ballShaft,ballSocket]
+class AnimatronicHead {
+
+    double printerOffset = 1.0 // Offset for printer precision
+    double ballSize = 5.0 // Size of the ball joint
+    double boltDiameterMeasurement = 2.5 // Bolt diameter measurement
+    double overallThickness = 6.4 // Overall thickness
+    double leftEyeDiameter = 20.0 // Left Eye Diameter
+    double rightEyeDiameter = 20.0 // Right Eye Diameter
+    double headDiameter = 50.0 // Head Diameter
+    double jawHeight = 15.0 // Jaw Height
+    double eyeCenter = 10.0 // Eye Center
+    double thickness = 3.5 // Material Thickness
+
+    HashMap<Double, CSG> eyeCache = [:] // Cache for eyes
+
+    CSG generateHead() {
+        // Generate the main head structure
+        CSG head = new Sphere(headDiameter / 2, 30, 15).toCSG()
+        head = head.union(generateEyeRings(head, 0, headDiameter / 2))
+        return head
+    }
+
+    CSG generateEyeRings(CSG upperHead, double xdist, double height) {
+        double cheekWidth = headDiameter / 6
+        double attachLevel = jawHeight + thickness - height
+
+        CSG lRing = new Cylinder(leftEyeDiameter / 2, leftEyeDiameter / 2, thickness, 30).toCSG()
+            .toZMin()
+            .roty(-90)
+
+        CSG rRing = new Cylinder(rightEyeDiameter / 2, rightEyeDiameter / 2, thickness, 30).toCSG()
+            .toZMin()
+            .roty(-90)
+
+        // Bolt and lug configurations
+        CSG lug = new Cylinder(boltDiameterMeasurement, boltDiameterMeasurement, thickness, 30).toCSG()
+            .toZMin()
+            .roty(-90)
+
+        CSG attach = new Cube(thickness, cheekWidth, boltDiameterMeasurement + thickness).toCSG()
+            .toZMin()
+            .toXMin()
+            .movez(attachLevel)
+
+        CSG plate = lRing.union(attach.movez(-attachLevel)).hull().union(rRing.union(attach.movez(-attachLevel)).hull())
+
+        // Add tilting mechanism for the eyes
+        CSG leftTiltMount = generateTiltMount(-eyeCenter / 2, height)
+        CSG rightTiltMount = generateTiltMount(eyeCenter / 2, height)
+
+        return plate.union(leftTiltMount).union(rightTiltMount)
+    }
+
+    CSG generateTiltMount(double xOffset, double height) {
+        double tiltMountHeight = 5.0 // Height of the tilt mount
+        double tiltMountWidth = 3.0 // Width of the tilt mount
+
+        return new Cube(thickness, tiltMountWidth, tiltMountHeight).toCSG()
+            .move(xOffset, 0, height + tiltMountHeight / 2) // Position the tilt mount
+            .toZMin()
+            .rotx(45) // Tilt the mount if needed (adjust angle as required)
+    }
+
+    static void main(String[] args) {
+        AnimatronicHead headDesign = new AnimatronicHead()
+        CSG head = headDesign.generateHead()
+
+        // Output the STL string instead of saving directly
+        String stlString = head.toStlString()
+
+        // Debug: Print the STL string to console
+        println "STL String Content:"
+        println stlString
+
+        // Write the STL string to a file
+        try {
+            def file = new File("C:/path/to/your/directory/animatronic_head_with_tilt.stl")
+            file.write(stlString)
+            println "Model saved successfully at: ${file.absolutePath}"
+        } catch (IOException e) {
+            println "Error saving model: ${e.message}"
+        }
+    }
 }
-//CSGDatabase.clear()//set up the database to force only the default values in	
-return makeBallJoint()
-//end Ball joint
